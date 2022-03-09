@@ -1,14 +1,10 @@
-// TODO: try to remove express?
 const express = require("express");
 const { join } = require("path");
 const { readFile } = require("fs/promises");
 
-// TODO: use package to get project root
-const PROJECT_ROOT = join(__dirname, "..");
-
-function removeSpaFallback() {
+function noFallback() {
   return {
-    name: "remove-history-fallback",
+    name: "no-fallback",
     configureServer(server) {
       return function () {
         removeViteSpaFallbackMiddleware(server.middlewares);
@@ -32,11 +28,12 @@ function removeViteSpaFallbackMiddleware(middlewares) {
 }
 
 function transformHtmlMiddleware(server) {
-  // use express for its convenience methods
   const middleware = express();
-  middleware.use(async (req, res, next) => {
+  const { root } = server.config;
+  
+  middleware.use(async function (req, res, next) {
     try {
-      const rawHtml = await getIndexHtml(req.path);
+      const rawHtml = await getIndexHtml(root, req.path);
       const transformedHtml = await server.transformIndexHtml(
         req.url, rawHtml, req.originalUrl
       );
@@ -54,11 +51,11 @@ function transformHtmlMiddleware(server) {
   };
 }
 
-async function getIndexHtml(path) {
-  const indexPath = join(PROJECT_ROOT, path, "index.html");
+async function getIndexHtml(root, path) {
+  const indexPath = join(root, path, "index.html");
   return readFile(indexPath, "utf-8");
 }
 
 module.exports = {
-  removeSpaFallback,
+  noFallback,
 };
