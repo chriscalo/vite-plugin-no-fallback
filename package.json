@@ -1,0 +1,24 @@
+{
+  "name": "vite-plugin-no-fallback",
+  "description": "Removes Vite's SPA fallback",
+  "version": "0.1.1",
+  "author": "chris.calo@gmail.com",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chriscalo/vite-plugin-no-fallback.git"
+  },
+  "keywords": [
+    "vite",
+    "plugin",
+    "spa-fallback"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chriscalo/vite-plugin-no-fallback/issues"
+  },
+  "homepage": "https://github.com/chriscalo/vite-plugin-no-fallback#readme"
+}
