@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-no-fallback",
   "description": "Removes Vite's SPA fallback",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "chris.calo@gmail.com",
   "main": "index.js",
   "dependencies": {
