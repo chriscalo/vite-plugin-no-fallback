@@ -41,7 +41,12 @@ function transformHtmlMiddleware(server) {
       res.set(server.config.server.headers);
       res.send(transformedHtml);
     } catch (error) {
-      return next(error);
+      const NO_SUCH_FILE_OR_DIRECTORY = "ENOENT";
+      if (error.code === NO_SUCH_FILE_OR_DIRECTORY) {
+        return next();
+      } else {
+        return next(error);
+      }
     }
   });
   
