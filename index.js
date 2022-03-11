@@ -6,25 +6,40 @@ function noFallback() {
   return {
     name: "no-fallback",
     configureServer(server) {
+      if (!server.config.server.middlewareMode) {
+        throw new Error("vite-plugin-no-fallback only works in middlewareMode");
+      }
+      
+      const { stack } = server.middlewares;
+      const middlewareBlockList = [
+        "viteSpaFallbackMiddleware",
+        "viteIndexHtmlMiddleware",
+        "vite404Middleware",
+      ];
+      
+      // intercept stack.push() to prevent unwanted vite middlewares
+      stack.push = function customPush(...layers) {
+        const filteredLayers = layers.filter(filterLayer);
+        const originalPush = Array.prototype.push.bind(stack);
+        originalPush(...filteredLayers);
+      };
+      
+      function filterLayer(layer) {
+        const functionName = layer.handle.name;
+        if (middlewareBlockList.includes(functionName)) {
+          console.log(`Blocked middleware named "${functionName}":`, layer);
+          return false;
+        } else {
+          return true;
+        }
+      }
+      
+      // runs after most vite middlewares have been added
       return function () {
-        removeViteSpaFallbackMiddleware(server.middlewares);
         server.middlewares.use(transformHtmlMiddleware(server));
       };
     },
   };
-}
-
-function removeViteSpaFallbackMiddleware(middlewares) {
-  const { stack } = middlewares;
-  const index = stack.findIndex(function (layer) {
-    const { handle: fn } = layer;
-    return fn.name === "viteSpaFallbackMiddleware";
-  });
-  if (index > -1) {
-    stack.splice(index, 1);
-  } else {
-    throw Error("viteSpaFallbackMiddleware() not found in server middleware");
-  }
 }
 
 function transformHtmlMiddleware(server) {
