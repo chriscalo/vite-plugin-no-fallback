@@ -31,36 +31,3 @@ export default defineConfig({
   ],
 });
 ```
-
-## Known issues
-
-This plugin seems to break the ability to use a `<script>` tag with content as
-the app entry point instead of linking to the entry point via the `src`
-attribute:
-
-```html
-<!-- DOESN'T WORK WITH THIS PLUGIN -->
-<html>
-…
-  <script type="module">
-    import Vue from 'vue';
-    import App from './App.vue';
-    
-    new Vue({
-      render: (h) => h(App),
-    }).$mount('#app');
-  </script>
-…
-</html>
-```
-
-To work around this problem, ensure your bootstrap script is linked via a `src`
-attribute:
-
-```html
-<html>
-…
-  <script type="module" src="index.js"></script>
-…
-</html>
-```
